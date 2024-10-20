@@ -24,9 +24,22 @@ jobs:
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
 
     - name: Upload replays
+      shell: pwsh
       run: |
+        $sourcePath = "D:\\clipy"
+        $destPath = "$PWD\\videos"
+        $files = Get-ChildItem -Path $sourcePath -Filter *.mp4
+        foreach ($file in $files) {
+            $destFile = Join-Path -Path $destPath -ChildPath $file.Name
+            if (Test-Path $destFile) {
+                $baseName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+                $extension = [System.IO.Path]::GetExtension($file.Name)
+                $newFileName = "$baseName-$(Get-Date -Format 'yyyyMMddHHmmss')$extension"
+                $destFile = Join-Path -Path $destPath -ChildPath $newFileName
+            }
+            Copy-Item -Path $file.FullName -Destination $destFile
+        }
         git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/mixmg/ogv.git"
-        cp -r "$PWD/videos/*.mp4" videos/
         git add videos/
         git commit -m "Add new replay"
         git push origin main
