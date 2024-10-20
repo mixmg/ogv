@@ -22,11 +22,11 @@ jobs:
 
     - name: Upload replays
       run: |
-        $token = $env:GITHUB_TOKEN
+        $token = ${{ secrets.ACCESS_TOKEN }}
         git remote set-url origin https://$token@github.com/mixmg/ogv.git
         cp -r "D:\clipy" videos/
         git add videos/
         git commit -m "Add new replay"
         git push origin main
       env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
