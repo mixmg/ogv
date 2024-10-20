@@ -20,7 +20,7 @@ function showReplays(player) {
         videoElement.controls = true;
         videoElement.muted = true;
         videoElement.loop = true;
-        videoElement.autoplay = true;
+        videoElement.autoplay = false;
 
         const sourceElement = document.createElement('source');
         sourceElement.src = `videos/${video.file}`;
