@@ -1,0 +1,32 @@
+name: Upload Replay
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # Check every 10 minutes
+
+jobs:
+  upload:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name ${{ secrets.GIT_USERNAME }}
+        git config --global user.email ${{ secrets.GIT_EMAIL }}
+      env:
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+
+    - name: Upload replays
+      run: |
+        $token = $env:GITHUB_TOKEN
+        git remote set-url origin https://$token@github.com/mixmg/ogv.git
+        cp -r "D:\clipy" videos/
+        git add videos/
+        git commit -m "Add new replay"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
