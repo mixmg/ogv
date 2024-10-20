@@ -29,9 +29,9 @@ jobs:
         $players = @("mixmg", "rower", "lawon")
         $videos = @()
         foreach ($player in $players) {
-            $files = Get-ChildItem -Path "$PWD/videos/$player" -Filter *.mp4 | Select-Object -ExpandProperty Name
+            $files = Get-ChildItem -Path "$PWD/videos/$player" -Filter *.mp4
             foreach ($file in $files) {
-                $videos += @{ file = "$player/$file"; player = $player }
+                $videos += @{ file = "$player/$file.Name"; player = $player; date = $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') }
             }
         }
         $json = @{ videos = $videos } | ConvertTo-Json
