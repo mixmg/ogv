@@ -23,25 +23,16 @@ jobs:
         GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
 
-    - name: Upload replays
+    - name: Update videos.json
       shell: pwsh
       run: |
-        $files = Get-ChildItem -Path "$PWD/videos" -Filter *.mp4
-        foreach ($file in $files) {
-            $destPath = Join-Path -Path "$PWD/videos" -ChildPath $file.Name
-            if (Test-Path $destPath) {
-                $baseName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
-                $extension = [System.IO.Path]::GetExtension($file.Name)
-                $newFileName = "$baseName-$(Get-Date -Format 'yyyyMMddHHmmss')$extension"
-                $destPath = Join-Path -Path "$PWD/videos" -ChildPath $newFileName
-            }
-            Copy-Item -Path $file.FullName -Destination $destPath
-        }
-        git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/mixmg/ogv.git"
+        $files = Get-ChildItem -Path "$PWD/videos" -Filter *.mp4 | Select-Object -ExpandProperty Name
+        $json = @{ videos = $files } | ConvertTo-Json
+        Set-Content -Path "$PWD/videos.json" -Value $json
+        
         git add videos/
-        git commit -m "Add new replay"
+        git add videos.json
+        git commit -m "Update videos list"
         git push origin main
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
-        
