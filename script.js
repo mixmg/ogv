@@ -18,8 +18,6 @@ function showReplays(player) {
 
         const videoElement = document.createElement('video');
         videoElement.controls = true;
-        videoElement.width = 800;
-        videoElement.height = 500;
         videoElement.muted = true;
         videoElement.loop = true;
         videoElement.autoplay = true;
