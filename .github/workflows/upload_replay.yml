@@ -26,8 +26,13 @@ jobs:
     - name: Update videos.json
       shell: pwsh
       run: |
-        $files = Get-ChildItem -Path "$PWD/videos" -Filter *.mp4 | Select-Object -ExpandProperty Name
-        $json = @{ videos = $files } | ConvertTo-Json
+        $players = @("mixmg", "rower", "lawon")
+        $allVideos = @{}
+        foreach ($player in $players) {
+            $files = Get-ChildItem -Path "$PWD/videos/$player" -Filter *.mp4 | Select-Object -ExpandProperty Name
+            $allVideos[$player] = $files
+        }
+        $json = $allVideos | ConvertTo-Json
         Set-Content -Path "$PWD/videos.json" -Value $json
         
         git add videos/
