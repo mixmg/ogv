@@ -1,6 +1,9 @@
 name: Upload Replay
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '*/10 * * * *' # Check every 10 minutes
 
@@ -14,17 +17,20 @@ jobs:
 
     - name: Set up Git
       run: |
-        git config --global user.name ${{ secrets.GIT_USERNAME }}
-        git config --global user.email ${{ secrets.GIT_EMAIL }}
+        git config --global user.name "${{ secrets.GIT_USERNAME }}"
+        git config --global user.email "${{ secrets.GIT_EMAIL }}"
       env:
         GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
 
+    - name: Create videos directory if it doesn't exist
+      run: mkdir -p videos
+
     - name: Upload replays
+      shell: pwsh
       run: |
-        $token = ${{ secrets.ACCESS_TOKEN }}
-        git remote set-url origin https://$token@github.com/mixmg/ogv.git
-        cp -r "D:\clipy" videos/
+        git remote set-url origin "https://${{ secrets.ACCESS_TOKEN }}@github.com/mixmg/ogv.git"
+        cp -r "D:\\clipy\\*.mp4" videos/
         git add videos/
         git commit -m "Add new replay"
         git push origin main
