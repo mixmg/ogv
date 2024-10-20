@@ -2,27 +2,30 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('videos.json')
         .then(response => response.json())
         .then(data => {
-            const players = Object.keys(data);
-            players.forEach(player => {
-                const playerSection = document.createElement('section');
+            const replaysDiv = document.getElementById('replays');
+
+            const players = {};
+
+            data.videos.forEach(video => {
+                if (!players[video.player]) {
+                    players[video.player] = [];
+                }
+                players[video.player].push(video.file);
+            });
+
+            for (const player in players) {
+                const playerSection = document.createElement('div');
                 playerSection.classList.add('player-section');
-                
-                const playerTitle = document.createElement('h2');
-                playerTitle.textContent = `Powtórki gracza: ${player}`;
-                playerSection.appendChild(playerTitle);
-                
-                const videoGrid = document.createElement('div');
-                videoGrid.classList.add('video-grid');
-                playerSection.appendChild(videoGrid);
-                
-                data[player].forEach(video => {
+                playerSection.innerHTML = `<h3>${player}</h3>`;
+
+                players[player].forEach(file => {
                     const videoElement = document.createElement('video');
-                    videoElement.src = `videos/${player}/${video}`;
+                    videoElement.src = `videos/${file}`;
                     videoElement.controls = true;
-                    videoGrid.appendChild(videoElement);
+                    playerSection.appendChild(videoElement);
                 });
 
-                document.body.appendChild(playerSection);
-            });
+                replaysDiv.appendChild(playerSection);
+            }
         });
 });

@@ -27,12 +27,14 @@ jobs:
       shell: pwsh
       run: |
         $players = @("mixmg", "rower", "lawon")
-        $allVideos = @{}
+        $videos = @()
         foreach ($player in $players) {
             $files = Get-ChildItem -Path "$PWD/videos/$player" -Filter *.mp4 | Select-Object -ExpandProperty Name
-            $allVideos[$player] = $files
+            foreach ($file in $files) {
+                $videos += @{ file = "$player/$file"; player = $player }
+            }
         }
-        $json = $allVideos | ConvertTo-Json
+        $json = @{ videos = $videos } | ConvertTo-Json
         Set-Content -Path "$PWD/videos.json" -Value $json
         
         git add videos/
