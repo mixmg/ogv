@@ -17,8 +17,18 @@ function showReplays(player) {
         videoContainer.classList.add('video-container');
 
         const videoElement = document.createElement('video');
-        videoElement.src = `videos/${video.file}`;
         videoElement.controls = true;
+        videoElement.width = 800;
+        videoElement.height = 500;
+        videoElement.muted = true;
+        videoElement.loop = true;
+        videoElement.autoplay = true;
+
+        const sourceElement = document.createElement('source');
+        sourceElement.src = `videos/${video.file}`;
+        sourceElement.type = 'video/mp4';
+
+        videoElement.appendChild(sourceElement);
         videoContainer.appendChild(videoElement);
 
         const dateElement = document.createElement('p');
